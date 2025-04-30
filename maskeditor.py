@@ -1763,8 +1763,10 @@ class ImageSelectorPane(QWidget,DataObject):
 
 
     @pyqtSlot()
-    def revertMask(self,maskName:str):
+    def revertMask(self,maskName:str|None=None):
         print("Reverting mask");
+        if maskName is None:
+            maskName = self.getSelectedImageName()
         if self.imageDirChooser.dire and (self.maskDirChooser.dire or Defaults.allowMaskCreation) and maskName is not None:
             # imName = self.getSelectedImageName()
             # baseName = os.path.splitext(imName)[0];
