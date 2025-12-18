@@ -1,21 +1,16 @@
-from abc import ABC, abstractmethod
-from ast import literal_eval
+from abc import abstractmethod
 from copy import copy
-from dataclasses import dataclass
 from logging import Logger
 import logging
-import time
 from ColorButton import ColorButton
-from enum import Enum
-import parsend
 from to_precision import std_notation
 from rangesliderside import RangeSlider
 from PyQt6 import QtGui
 from PyQt6.QtCharts import QChart, QChartView, QLineSeries, QValueAxis
-from PyQt6.QtWidgets import QAbstractItemView, QAbstractSlider, QApplication, QCheckBox, QComboBox, QCompleter, QDialog, QFileDialog, QGraphicsPathItem, QGraphicsScene, QGraphicsView, QGridLayout, QHBoxLayout, QLabel, QLayout, QLineEdit, QListView, QMainWindow, QMenu, QMessageBox, QPushButton, QSizePolicy, QSlider, QSplitter, QStatusBar, QStyle, QStyleOptionFrame, QToolButton, QVBoxLayout, QWidget, QWhatsThis
+from PyQt6.QtWidgets import QAbstractItemView, QAbstractSlider, QApplication, QCheckBox, QComboBox, QCompleter, QDialog, QFileDialog, QGraphicsPathItem, QGraphicsScene, QGraphicsView, QGridLayout, QHBoxLayout, QLabel, QLayout, QLineEdit, QListView, QMainWindow, QMessageBox, QPushButton, QSizePolicy, QSlider, QSplitter, QStatusBar, QStyle, QStyleOptionFrame, QToolButton, QVBoxLayout, QWidget
 from PyQt6 import QtCore
-from PyQt6.QtCore import QFile, QLineF, QMargins, QMarginsF, QPoint, QPointF, QRect, QRectF, QSignalMapper, QSize, QStringListModel, QTimer, Qt, pyqtSignal, pyqtSlot, QObject, QEvent, QUrl, QCoreApplication, QByteArray, QIODevice, QBuffer, QtMsgType, qInstallMessageHandler
-from PyQt6.QtGui import QAction, QBitmap, QBrush, QCloseEvent, QCursor, QDoubleValidator, QFontMetrics, QColor, QGuiApplication, QIcon, QImage, QImageWriter, QIntValidator, QMouseEvent, QPainter, QPainterPath, QPen, QPixmap, QPolygon, QPolygonF, QShortcut, QKeySequence, QTextDocument, QTransform, QUndoCommand, QUndoStack, QValidator
+from PyQt6.QtCore import QMargins, QMarginsF, QPoint, QPointF, QRect, QRectF, QSize, QStringListModel, QTimer, Qt, pyqtSignal, pyqtSlot, QObject, QEvent, QUrl, QCoreApplication, QByteArray, QIODevice, QBuffer, QtMsgType, qInstallMessageHandler
+from PyQt6.QtGui import QAction, QBitmap, QBrush, QCloseEvent, QCursor, QDoubleValidator, QColor, QGuiApplication, QIcon, QImage, QIntValidator, QMouseEvent, QPainter, QPainterPath, QPen, QPixmap, QPolygonF, QKeySequence, QValidator
 import numpy as np
 import math
 from watchdog.events import FileSystemEventHandler, FileSystemEvent
@@ -26,7 +21,7 @@ import shutil
 import json_tricks as json
 import inspect
 import circleutil
-from typing import Any, Callable, ClassVar, Optional, Protocol, Sequence, Union,List,Tuple, cast
+from typing import Any, Callable, Optional, Protocol, Sequence, Union,List,Tuple, cast
 from skimage.transform import resize
 from skimage.exposure import rescale_intensity
 from pathlib import Path
@@ -61,7 +56,6 @@ if Defaults.loadMode == LoadMode.biof:
         bf.init_logger = init_logger
 elif Defaults.loadMode == LoadMode.skimage:
     raise DeprecationWarning("skimage imread/imsave is deprecated! Please use imageio.")
-    from skimage.io import imread,imsave
 else:
     from imageio.v3 import imread,imwrite as imsave
 
@@ -694,7 +688,6 @@ class MaskedImageView(QGraphicsView,DataObject):
             self.updatePreviews(-1);
             self.cursorUpdate.emit(self.mapToScene(event.position().toPoint()));
         super().mouseMoveEvent(event);
-
 
     @pyqtSlot(float)
     def zoom(self,factor,anchor=None):
@@ -1824,11 +1817,6 @@ class ImageSelectorPane(QWidget,DataObject):
         if dire and os.path.exists(dire):
             filtered = list(filter(lambda x: x.lower().endswith(tuple(Defaults.supportedImageExts)),os.listdir(dire)));
             filtered.sort(key = lambda e: (len(e),e));
-            # if any(filter(lambda x: x.lower().endswith('.nd'),os.listdir(dire))):
-            #     try:
-            #         filtered = parsend.sorted_dir(filtered);
-            #     except Exception as e:
-            #         print(e);
             filtered = natsorted(filtered,alg=ns.LOCALE|ns.PATH)
             if filtered == self.model.stringList():
                 #no change
